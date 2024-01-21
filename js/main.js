@@ -209,7 +209,7 @@ function checkWin() {
     if (board.toString() == currentSolution.toString()) {
         headline.innerHTML = 'you win!';
     } else if (board.toString() !== currentSolution.toString()) {
-        headline.innerHTML = 'nonogram puzzle';
+        headline.innerHTML = 'nonogram puzzle' + ' ' + (currentPuzzle + 1);
     }
 }
 
