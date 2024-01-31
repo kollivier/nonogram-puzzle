@@ -17,6 +17,7 @@ var puzzleSolutions = [solution];
 var currentPuzzle = 0;
 var puzzleColumns = 11;
 var puzzleRows = 11;
+var puzzleName = 'Nonogram Game';
 
 /*----- app's state variables -----*/
 var board;
@@ -36,7 +37,7 @@ restartButton.addEventListener('click', cleanBoard);
 nextButton.addEventListener('click', nextPuzzle);
 
 /*----- functions -----*/
-initialize();
+cleanBoard();
 
 // Swap gameboard for instructions on click
 function toggleInstructions() {
@@ -56,7 +57,7 @@ function toggleInstructions() {
 function cleanBoard() {
     initialize()
     cells.forEach(function (el) {el.style.backgroundColor = ''})
-    headline.innerHTML = 'nonogram puzzle' + ' ' + (currentPuzzle + 1);
+    headline.innerHTML = puzzleName + ' ' + (currentPuzzle + 1);
 }
 
 
@@ -209,7 +210,7 @@ function checkWin() {
     if (board.toString() == currentSolution.toString()) {
         headline.innerHTML = 'you win!';
     } else if (board.toString() !== currentSolution.toString()) {
-        headline.innerHTML = 'nonogram puzzle';
+        headline.innerHTML = puzzleName + ' ' + (currentPuzzle + 1);
     }
 }
 
