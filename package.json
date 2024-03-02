@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "build": "./build-app.sh"
+  },
+
   "dependencies": {
     "@capacitor/android": "^5.7.1",
     "@capacitor/core": "^5.7.1",
