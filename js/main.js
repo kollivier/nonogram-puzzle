@@ -28,13 +28,18 @@ var headline = document.getElementById('headline');
 var puzzleBoard = document.getElementById('puzzleboard');
 var restartButton = document.getElementById('restart');
 var nextButton = document.getElementById('next');
+var backButton = document.getElementById('back');
 var fullPuzzle = document.getElementById('puzzle-full');
 var fullInstructions = document.getElementById('instructions');
 
 /*----- event listeners -----*/
-puzzleBoard.addEventListener('click', handleClick);
+// puzzleBoard.addEventListener('click', handleClick);
 restartButton.addEventListener('click', cleanBoard);
 nextButton.addEventListener('click', nextPuzzle);
+backButton.addEventListener('click', previousPuzzle);
+puzzleBoard.addEventListener('mousedown', handleMouseDown);
+document.body.addEventListener('mouseup', handleMouseUp);
+puzzleBoard.addEventListener('mouseover', handleMouseOver);
 
 /*----- functions -----*/
 cleanBoard();
@@ -184,6 +189,8 @@ function handleClick(evt) {
     const marker = evt.target;
     var markerString = marker.id;
     var rowArr = markerString.split('r');
+    console.log('markerString = ' + markerString);
+    console.log('rowArr = ' + rowArr);
     var rowIdx = rowArr[rowArr.length - 1];
     rowArr.pop();
     var colIdx = rowArr.join('').replace('c', '');
@@ -191,17 +198,137 @@ function handleClick(evt) {
         if (evt.altKey === false) {
             if (!marker.style.backgroundColor) {
                 marker.style.backgroundColor = 'grey'
+                console.log('rowIdx = ' + rowIdx);
+                console.log('colIdx = ' + colIdx);
                 board[rowIdx][colIdx] = 1;
             } else if (marker.style.backgroundColor = 'grey') {
                 marker.style.backgroundColor = ''
                 board[rowIdx][colIdx] = 0;
             } 
         } else {
-            marker.style.backgroundColor = 'pink'
+            marker.innerHTML = 'X'
             board[rowIdx][colIdx] = 0;
         }
     }
     checkWin()
+}
+
+// get cell row and column information
+function getCellInfo(cellId) {
+    console.log('cell id =' + cellId);
+    var rowArr = cellId.split('r');
+    var rowIdx = rowArr[rowArr.length - 1];
+    rowArr.pop();
+    var colIdx = rowArr.join('').replace('c', '');
+    return [colIdx, rowIdx];
+}
+
+var cellMouseDown;
+var cellMouseUp;
+var cellMouseOver;
+
+// a drag feature mouse down
+function handleMouseDown(evt) {
+    console.log('mouse down evt.target.id =' + evt.target.id);
+    console.log('event.buttons = ' + evt.buttons);
+    if (evt.buttons === 1) {
+        cellMouseDown = evt.target.id;
+        var cell = evt.target;
+        toggleCell(cell, evt);
+    }
+    else {
+        cellMouseDown = null;
+    }
+
+}
+
+function toggleCell(cell, evt){
+    var currentCell = getCellInfo(cell.id);
+    var rowIdx = currentCell[1];
+    var colIdx = currentCell[0];
+    if (colIdx != 0) {
+        if (evt.altKey === false) {
+            cell.innerHTML = '';
+            if (!cell.style.backgroundColor) {
+                cell.style.backgroundColor = 'grey';
+                console.log('loop row index = ' + rowIdx);
+                console.log('loop column index = ' + colIdx);
+                board[rowIdx][colIdx] = 1;
+            } else if (cell.style.backgroundColor = 'grey') {
+                cell.style.backgroundColor = '';
+                board[rowIdx][colIdx] = 0;
+            }
+        } else {
+            cell.innerHTML = 'X';
+            board[rowIdx][colIdx] = 0;
+        }
+    }
+}
+
+// mouse enter handling (for dragging)
+function handleMouseOver(evt) {
+    console.log('value of cellMouseDown =' + cellMouseDown);
+    if (cellMouseDown) {
+        var cell = evt.target;
+        toggleCell(cell, evt);
+    }
+
+}
+
+// a drag feature mouse up
+function handleMouseUpOld(evt) {
+    console.log('mouse down evt.target.id = ' + cellMouseDown);
+    console.log('mouse up evt.target.id = ' + evt.target.id);
+    cellMouseUp = evt.target.id
+    var startCell = getCellInfo(cellMouseDown);
+    console.log('return value of getCellInfo = ' + startCell);
+    console.log('cell Mouse Up = ' + cellMouseUp);
+    var endCell = getCellInfo(cellMouseUp);
+    console.log('return value of getCellInfo for the end cell = ' + endCell);
+    var startCellCol = startCell[0];
+    var endCellCol = endCell[0];
+    var startCellRow = startCell[1];
+    var endCellRow = endCell[1];
+    var numCellDragged = 0;
+    if (startCellCol == endCellCol){
+        numCellDragged = endCellRow - startCellRow + 1;
+    } else if (startCellRow == endCellRow){
+        numCellDragged = endCellCol - startCellCol + 1;
+    }
+    var endCellCol = endCell[0];
+    var startCellRow = startCell[1];
+    var rowIdx = startCellRow;
+    var colIdx = startCellCol;
+    for (let i=0; i<numCellDragged; i++) {
+        var cell = document.getElementById('c'+colIdx+'r'+rowIdx);
+        console.log('cells from startCell to endCell = ' + numCellDragged);
+        if (colIdx != 0) {
+            if (evt.altKey === false) {
+                if (!cell.style.backgroundColor) {
+                    cell.style.backgroundColor = 'grey';
+                    console.log('loop row index = ' + rowIdx);
+                    console.log('loop column index = ' + colIdx);
+                    board[rowIdx][colIdx] = 1;
+                } else if (cell.style.backgroundColor = 'grey') {
+                    cell.style.backgroundColor = '';
+                    board[rowIdx][colIdx] = 0;
+                }
+            } else {
+                cell.innerHTML = 'X';
+                board[rowIdx][colIdx] = 0;
+            }
+        }
+        if (startCellCol == endCellCol){
+            rowIdx++;
+        } else if (startCellRow == endCellRow){
+            colIdx++;
+        }
+    }
+
+    cellMouseDown = null;
+}
+function handleMouseUp(evt) {
+    cellMouseDown = null;
 }
 
 // Check if current board array matches solution array
@@ -227,6 +354,16 @@ function nextPuzzle() {
     updatePuzzleHints();
     cleanBoard();
 }
+
+function previousPuzzle() {
+    if (currentPuzzle > 0) {
+        // Go back to the previous puzzle.
+        currentPuzzle--;
+        updatePuzzleHints();
+        cleanBoard();
+    }
+}
+
 
 function generateNewSolution() {
     // I'm too lazy to create solutions by hand, so Imma let the computer do it for me.
