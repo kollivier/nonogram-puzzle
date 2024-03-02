@@ -4,6 +4,16 @@
 
 ![Nonogram Screenshot](images/nonogram-screenshot.png "Nonogram Screenshot")
 
+### Set up
+
+- Download and install nodejs from https://nodejs.org/en/download
+- Run the steps here to set up mobile apps: https://capacitorjs.com/docs/getting-started/environment-setup
+- run `npm install` to install all dependencies
+
+### Building the app
+
+Run `npx cap sync`
+
 ### [Open Puzzle](https://josephcoburn.github.io/nonogram-puzzle/)
 
 #### Technologies Used:
