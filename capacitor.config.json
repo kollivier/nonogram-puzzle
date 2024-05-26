@@ -1,0 +1,8 @@
+{
+  "appId": "com.kosoftworks.nonogrampuzzle",
+  "appName": "Nonogram Puzzle",
+  "webDir": "app",
+  "server": {
+    "androidScheme": "https"
+  }
+}

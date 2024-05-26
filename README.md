@@ -12,7 +12,7 @@
 
 ### Building the app
 
-Run `npx cap sync`
+Run `./build-app.sh`
 
 ### [Open Puzzle](https://josephcoburn.github.io/nonogram-puzzle/)
 
